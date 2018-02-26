@@ -50,7 +50,7 @@ public class ClassUtil {
 
 
     /**
-     * 获取指定包名下的所有类
+     * 加载指定包名下的所有类
      * @param packageName
      * @return
      */
@@ -66,6 +66,7 @@ public class ClassUtil {
                         String packagePath = url.getPath().replaceAll("%20","");
                         addClass(classSet,packagePath,packageName);
                     }else if(protocol.equals("jar")){
+                        //处理jar类型文件
                         JarURLConnection jarURLConnection = (JarURLConnection)url.openConnection();
                         if(jarURLConnection!=null){
                             JarFile jarFile = jarURLConnection.getJarFile();
@@ -91,6 +92,12 @@ public class ClassUtil {
         return classSet;
     }
 
+    /**
+     * 添加class
+     * @param classSet
+     * @param packagePath
+     * @param packageName
+     */
     public static void  addClass(Set<Class<?>> classSet,String packagePath,String packageName){
         File[] files = new File(packagePath).listFiles(new FileFilter() {
             public boolean accept(File file) {

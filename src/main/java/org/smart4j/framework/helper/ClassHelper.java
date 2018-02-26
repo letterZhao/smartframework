@@ -4,6 +4,7 @@ import org.smart4j.framework.annotation.Controller;
 import org.smart4j.framework.annotation.Service;
 import org.smart4j.framework.utils.ClassUtil;
 
+import java.lang.annotation.Annotation;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,7 +13,6 @@ import java.util.Set;
  * Created by Administrator on 2018/2/23.
  */
 public class ClassHelper {
-
 
     private static final Set<Class<?>> CLASS_SET ;
 
@@ -34,7 +34,7 @@ public class ClassHelper {
      */
     public static Set<Class<?>> getServiceClassSet(){
         Set<Class<?>> classSet = new HashSet<Class<?>>();
-        for(Class clazz : classSet ){
+        for(Class clazz : CLASS_SET ){
             if(clazz.isAnnotationPresent(Service.class)){
                 classSet.add(clazz);
             }
@@ -49,7 +49,7 @@ public class ClassHelper {
      */
     public static Set<Class<?>> getControllerClassSet(){
         Set<Class<?>> classSet = new HashSet<Class<?>>();
-        for(Class clazz : classSet ){
+        for(Class clazz : CLASS_SET ){
             if(clazz.isAnnotationPresent(Controller.class)){
                 classSet.add(clazz);
             }
@@ -67,5 +67,35 @@ public class ClassHelper {
         return classSet;
     }
 
+
+    /**
+     * 获取某应用包下某类的所有子类
+     * @param superClass
+     * @return
+     */
+    public static Set<Class<?>> getClassBySuper(Class<?> superClass){
+        Set<Class<?>> classSet = new HashSet<Class<?>>();
+        for (Class clazz : CLASS_SET) {
+            if(superClass.isAssignableFrom(clazz) && !clazz.equals(superClass)){
+                classSet.add(clazz);
+            }
+        }
+        return classSet;
+    }
+
+    /**
+     * 获取某应用包下带某注解的类
+     * @param annotationClass
+     * @return
+     */
+    public static Set<Class<?>> getClassByAnnotation(Class<? extends Annotation> annotationClass){
+        Set<Class<?>> classSet = new HashSet<Class<?>>();
+        for (Class clazz : CLASS_SET) {
+            if(clazz.isAnnotationPresent(annotationClass)){
+                classSet.add(clazz);
+            }
+        }
+        return classSet;
+    }
 
 }

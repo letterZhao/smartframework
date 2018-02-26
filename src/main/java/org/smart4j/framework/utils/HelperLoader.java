@@ -1,9 +1,6 @@
 package org.smart4j.framework.utils;
 
-import org.smart4j.framework.helper.BeanHelper;
-import org.smart4j.framework.helper.ClassHelper;
-import org.smart4j.framework.helper.ControllerHelper;
-import org.smart4j.framework.helper.IocHelper;
+import org.smart4j.framework.helper.*;
 
 /**
  * 初始化
@@ -12,14 +9,13 @@ import org.smart4j.framework.helper.IocHelper;
 public class HelperLoader {
 
     public static final Class<?>[] classes ={
-            ClassHelper.class, BeanHelper.class, ControllerHelper.class, IocHelper.class
+            ClassHelper.class, BeanHelper.class, ControllerHelper.class, AopHelper.class,IocHelper.class
     };
 
     public static void init(){
         for (Class<?> clazz: classes) {
-            ClassUtil.loadClass(clazz.getName(),false);
+            ClassUtil.loadClass(clazz.getName(),true);
         }
     }
-
 
 }

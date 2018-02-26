@@ -27,10 +27,10 @@ public class CastUtil {
     }
 
     public static boolean castBoolean(Object obj){
-        boolean vaule = false;
+        boolean value = false;
         if(obj!=null){
             Boolean.parseBoolean(castString(obj));
         }
-        return vaule;
+        return value;
     }
 }
