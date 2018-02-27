@@ -58,7 +58,7 @@ public class DispatcherServlet extends HttpServlet {
         String requestMethod = request.getMethod().toLowerCase();
         String requestPath = request.getPathInfo();
 
-        if(requestPath.equals("")){
+        if(requestPath.equals("/favicon.ico")){
             return;
         }
 
