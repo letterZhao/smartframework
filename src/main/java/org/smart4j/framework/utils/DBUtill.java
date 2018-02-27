@@ -71,6 +71,57 @@ public class DBUtill {
     }
 
     /**
+     * 开始事务
+     */
+    public static void beginTransaction(){
+        Connection connection = getConn();
+        if(connection!=null){
+            try {
+                connection.setAutoCommit(false);
+            }catch (Exception e){
+                logger.error("begin transaction failure" + e);
+                throw new RuntimeException();
+            }finally {
+                CONNECTION_HOLDER.set(connection);
+            }
+        }
+    }
+    /**
+     * 提交事务
+     */
+    public static void commitTransaction(){
+        Connection connection = getConn();
+        if(connection!=null){
+            try {
+                connection.commit();
+                connection.close();
+            }catch (Exception e){
+                logger.error("commit transaction failure" + e);
+                throw new RuntimeException();
+            }finally {
+                CONNECTION_HOLDER.remove();
+            }
+        }
+    }
+
+    /**
+     * 回滚事务
+     */
+    public static void rollbackTransaction(){
+        Connection connection = getConn();
+        if(connection!=null){
+            try {
+                connection.rollback();
+                connection.close();
+            }catch (Exception e){
+                logger.error("rollback transaction failure" + e);
+                throw new RuntimeException();
+            }finally {
+                CONNECTION_HOLDER.remove();
+            }
+        }
+    }
+    /**
      * 关闭连接
      * @param connection
      */
