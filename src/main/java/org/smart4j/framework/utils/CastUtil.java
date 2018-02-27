@@ -25,6 +25,13 @@ public class CastUtil {
         }
         return value;
     }
+    public static double castDouble(Object obj){
+        int value = 0;
+        if(obj!=null){
+            Double.parseDouble(castString(obj));
+        }
+        return value;
+    }
 
     public static boolean castBoolean(Object obj){
         boolean value = false;

@@ -9,9 +9,7 @@ import org.smart4j.framework.bean.Handler;
 import org.smart4j.framework.bean.Param;
 import org.smart4j.framework.bean.View;
 import org.smart4j.framework.constant.ConfigConstant;
-import org.smart4j.framework.helper.BeanHelper;
-import org.smart4j.framework.helper.ConfigHelper;
-import org.smart4j.framework.helper.ControllerHelper;
+import org.smart4j.framework.helper.*;
 import org.smart4j.framework.utils.*;
 
 import javax.servlet.ServletConfig;
@@ -50,6 +48,7 @@ public class DispatcherServlet extends HttpServlet {
         ServletRegistration  defualtSevletRegister = servletContext.getServletRegistration("default");
         defualtSevletRegister.addMapping(ConfigHelper.getAssetPath()+"*");
 
+        UploadHelper.init(servletContext);
     }
 
 
@@ -58,6 +57,11 @@ public class DispatcherServlet extends HttpServlet {
         //获取请求路径和请求方法
         String requestMethod = request.getMethod().toLowerCase();
         String requestPath = request.getPathInfo();
+
+        if(requestPath.equals("")){
+            return;
+        }
+
         logger.info("request.getPathInfo()+++++++========"+requestPath);
         //获取处理器handler
         Handler handler = ControllerHelper.getHandler(requestMethod,requestPath);
@@ -65,33 +69,13 @@ public class DispatcherServlet extends HttpServlet {
             //获取请求的controller
             Class<?> controllerClass = handler.getControllerClass();
             Object controllerBean = BeanHelper.getBean(controllerClass);
-            //创建请求参数对象
-            Map<String,Object> paramMap = new HashMap<String, Object>();
-            Enumeration<String> paramNames = request.getParameterNames();
-            while (paramNames.hasMoreElements()){
-                String paramName = paramNames.nextElement();
-                String paramValue = request.getParameter(paramName);
-                paramMap.put(paramName,paramValue);
-                logger.info("request.getParameterNames()+++++++========"+paramName);
+            Param param ;
+            if(UploadHelper.isMultipart(request)){
+                param = UploadHelper.createParam(request);
+            }else {
+                param = RequestHelper.createParm(request);
             }
-            //读取请求信息
-            String body = CodeUtil.decode(StreamUtil.getString(request.getInputStream()));
-            if(StringUtils.isNotEmpty(body)){
-                //截取请求参数
-                String[] params = StringUtils.split(body,"&");
-                if(ArrayUtils.isNotEmpty(params)){
-                    for (String param: params) {
-                        String[] array = StringUtils.split(param,"=");
-                        if(ArrayUtils.isNotEmpty(array) && array.length==2){
-                            String paramName = array[0];
-                            String paramValue = array[1];
-                            paramMap.put(paramName,paramValue);
-                            logger.info("request.getInputStream()=====name==="+paramName+"++++++value========"+paramValue);
-                        }
-                    }
-                }
-            }
-            Param param = new Param(paramMap);
+
             //获取请求方法,并调用
             Method actionMethod = handler.getActionMethod();
             Object result ;
@@ -100,36 +84,43 @@ public class DispatcherServlet extends HttpServlet {
             }else {
                 result = ReflectionUtil.invokeMethod(controllerBean,actionMethod,param);
             }
+
             //处理action方法返回值
             if(result instanceof View){
                 //返回jsp页面
-                View view = (View)result;
-                String path = view.getPath();
-                if(StringUtils.isNotEmpty(path)){
-                    if(path.startsWith("/")){
-                        response.sendRedirect(request.getContextPath()+path);
-                    }else {
-                        Map<String,Object> model = view.getModel();
-                        for (Map.Entry<String,Object> entry : model.entrySet()){
-                            request.setAttribute(entry.getKey(),entry.getValue());
-                        }
-                        request.getRequestDispatcher(ConfigConstant.APP_JSP_PATH + path).forward(request,response);
-                    }
-                }
+                handleViewResult((View)result,request,response);
             }else if(result instanceof Data){
                 //返回json数据
-                Data data = (Data)result;
-                Object model = data.getModel();
-                if(model!=null){
-                    response.setContentType("application/json");
-                    response.setCharacterEncoding("UTF-8");
-                    PrintWriter writer = response.getWriter();
-                    String json = JsonUtil.objToJson(model);
-                    writer.write(json);
-                    writer.flush();
-                    writer.close();
-                }
+                handleDataResult((Data)result,request,response);
             }
+        }
+    }
+
+    private void  handleViewResult(View view,HttpServletRequest request,HttpServletResponse response)throws IOException,ServletException{
+        String path = view.getPath();
+        if(StringUtils.isNotEmpty(path)){
+            if(path.startsWith("/")){
+                response.sendRedirect(request.getContextPath()+path);
+            }else {
+                Map<String,Object> model = view.getModel();
+                for (Map.Entry<String,Object> entry : model.entrySet()){
+                    request.setAttribute(entry.getKey(),entry.getValue());
+                }
+                request.getRequestDispatcher(ConfigConstant.APP_JSP_PATH + path).forward(request,response);
+            }
+        }
+    }
+
+    private void  handleDataResult(Data data,HttpServletRequest request,HttpServletResponse response)throws IOException,ServletException{
+        Object model = data.getModel();
+        if(model!=null){
+            response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
+            PrintWriter writer = response.getWriter();
+            String json = JsonUtil.objToJson(model);
+            writer.write(json);
+            writer.flush();
+            writer.close();
         }
     }
 
