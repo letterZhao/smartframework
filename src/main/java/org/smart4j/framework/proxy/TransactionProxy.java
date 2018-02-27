@@ -40,6 +40,8 @@ public class TransactionProxy implements Proxy {
             }finally {
                 FLAG_HODLER.remove();
             }
+        }else {
+            result = proxyChain.doProxyChain();
         }
         return result;
     }

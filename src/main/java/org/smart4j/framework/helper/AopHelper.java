@@ -3,9 +3,12 @@ package org.smart4j.framework.helper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smart4j.framework.annotation.Aspect;
+import org.smart4j.framework.annotation.Service;
+import org.smart4j.framework.annotation.Transaction;
 import org.smart4j.framework.proxy.AspectProxy;
 import org.smart4j.framework.proxy.Proxy;
 import org.smart4j.framework.proxy.ProxyManager;
+import org.smart4j.framework.proxy.TransactionProxy;
 import sun.rmi.transport.ObjectTable;
 
 import java.lang.annotation.Annotation;
@@ -101,6 +104,32 @@ public class AopHelper {
             }
         }
         return targetMap;
+    }
+
+    /**
+     * 添加普通代理
+     * @param proxyMap
+     * @throws Throwable
+     */
+    private static void addAspectProxy(Map<Class<?>,Set<Class<?>>> proxyMap) throws Throwable{
+        Set<Class<?>> proxyClassSet = ClassHelper.getClassBySuper(AspectProxy.class);
+        for (Class<?> proxyClass: proxyClassSet) {
+            if(proxyClass.isAnnotationPresent(Aspect.class)){
+                Aspect aspect = proxyClass.getAnnotation(Aspect.class);
+                Set<Class<?>> targetClassSet = createTargetClassSet(aspect);
+                proxyMap.put(proxyClass,targetClassSet);
+            }
+        }
+    }
+
+    /**
+     * 添加事务代理
+     * @param proxyMap
+     * @throws Throwable
+     */
+    private static void addTransactionProxy(Map<Class<?>,Set<Class<?>>> proxyMap) throws Throwable{
+        Set<Class<?>> proxyClassSet = ClassHelper.getClassByAnnotation(Service.class);
+        proxyMap.put(TransactionProxy.class,proxyClassSet);
     }
 
 }
