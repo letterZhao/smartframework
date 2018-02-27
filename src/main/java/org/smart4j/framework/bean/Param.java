@@ -1,5 +1,6 @@
 package org.smart4j.framework.bean;
 
+import org.apache.commons.collections4.MapUtils;
 import org.smart4j.framework.utils.CastUtil;
 
 import java.util.Map;
@@ -35,4 +36,11 @@ public class Param {
         return paramMap;
     }
 
+    /**
+     * 验证参数是否为空
+     * @return
+     */
+    public boolean isEmpty(){
+        return MapUtils.isEmpty(paramMap);
+    }
 }
