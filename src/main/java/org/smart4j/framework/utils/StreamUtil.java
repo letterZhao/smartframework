@@ -34,7 +34,7 @@ public final class StreamUtil {
      * @param inputStream
      * @param outputStream
      */
-    public static void copyStream(InputStream inputStream, OutputStream outputStream){
+    public static void copyStream(InputStream inputStream ,OutputStream outputStream){
         try {
             int length;
             byte[] buffer = new byte[1024*4];

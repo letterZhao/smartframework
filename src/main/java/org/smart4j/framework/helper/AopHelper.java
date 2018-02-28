@@ -4,17 +4,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.smart4j.framework.annotation.Aspect;
 import org.smart4j.framework.annotation.Service;
-import org.smart4j.framework.annotation.Transaction;
 import org.smart4j.framework.proxy.AspectProxy;
 import org.smart4j.framework.proxy.Proxy;
 import org.smart4j.framework.proxy.ProxyManager;
 import org.smart4j.framework.proxy.TransactionProxy;
-import sun.rmi.transport.ObjectTable;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
 
 /**
+ * aop框架
  * Created by Administrator on 2018/2/26.
  */
 public class AopHelper {
@@ -24,8 +23,8 @@ public class AopHelper {
     //初始化aop框架
     static {
         try {
-            Map<Class<?>,Set<Class<?>>> proxyMap = createProxyMap();
-            Map<Class<?>,List<Proxy>>targetMap = createTargetMap(proxyMap);
+            Map<Class<?>,Set<Class<?>>>  proxyMap = createProxyMap();
+            Map<Class<?>,List<Proxy>>  targetMap = createTargetMap(proxyMap);
             for(Map.Entry<Class<?>,List<Proxy>> targetEntry : targetMap.entrySet()) {
                 Class<?> targetClass = targetEntry.getKey();
                 List<Proxy> proxyList = targetEntry.getValue();
@@ -61,7 +60,7 @@ public class AopHelper {
      */
     private static Map<Class<?>,Set<Class<?>>> createProxyMap() throws Exception{
         Map<Class<?>,Set<Class<?>>> proxyMap = new HashMap<Class<?>, Set<Class<?>>>();
-        //获取所有代理类
+        //获取所有代理类(继承了aspectProxy类)
         Set<Class<?>> proxyClassSet = ClassHelper.getClassBySuper(AspectProxy.class);
         //遍历所有代理类并找到带有aspect的注解
         for (Class<?> proxyClass:proxyClassSet) {

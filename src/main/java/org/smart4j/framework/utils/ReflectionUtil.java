@@ -37,7 +37,7 @@ public class ReflectionUtil {
      * @param objs
      * @return
      */
-    public static Object invokeMethod(Object obj, Method method,Object... objs){
+    public static Object invokeMethod(Object obj, Method method ,Object... objs){
         Object result = null;
         try {
             method.setAccessible(true);

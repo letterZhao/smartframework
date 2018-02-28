@@ -44,9 +44,14 @@ public class ProxyChain {
         return methodPrams;
     }
 
+    /**
+     * 执行代理链
+     * @return
+     * @throws Throwable
+     */
     public Object doProxyChain() throws Throwable{
         Object methodResult;
-        if(proxyIndex<proxyList.size()){
+        if(proxyIndex  < proxyList.size()){
             methodResult = proxyList.get(proxyIndex++).doProxy(this);
         }else {
             methodResult = methodProxy.invokeSuper(targetObject,methodPrams);

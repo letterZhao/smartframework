@@ -11,7 +11,7 @@ import java.lang.annotation.*;
 public @interface Aspect {
 
     /**
-     * 注解
+     * 目标类
      * @return
      */
     Class<? extends Annotation> value();

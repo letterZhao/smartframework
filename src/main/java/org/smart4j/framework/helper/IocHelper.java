@@ -4,7 +4,6 @@ import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.smart4j.framework.annotation.Autowired;
 import org.smart4j.framework.utils.ReflectionUtil;
-
 import java.lang.reflect.Field;
 import java.util.Map;
 
@@ -15,12 +14,13 @@ import java.util.Map;
 public class IocHelper {
 
     /**
-     * 找到所有的autowired注解类，并设置为目标controller的成员变量
+     * 找到所有的autowired注解对象，并设置为目标controller的成员变量
      */
     static {
+        //获取bean容器
         Map<Class<?>,Object> beanMap = BeanHelper.getBeanMap();
         if(MapUtils.isNotEmpty(beanMap)){
-            for (Map.Entry<Class<?>,Object> entry :beanMap.entrySet() ){
+            for (Map.Entry<Class<?>,Object> entry : beanMap.entrySet() ){
                 Class<?> beanClass = entry.getKey();
                 Object instance = entry.getValue();
                 Field[] fields = beanClass.getDeclaredFields();
