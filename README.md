@@ -1,5 +1,5 @@
 #smartframework
-轻量级javaweb框架,持续更新中....  
+黄勇<<架构探险:从零开始写JavaWeb框架>>,轻量级javaweb框架smartframework源码,持续更新中....  
 
 #**简介**：  
 ##**一、实现IOC功能(加载配置文件，读取路径下的类、实例化类、IOC容器管理bean)**  
@@ -11,7 +11,7 @@ ClassHelper类 封装了ClassUtil类，提供各种获取Class的方法
 ReflectionUtil类 提供实例化Class的方法  
 BeanHelper类 IOC容器，提供获取实例方法    
 #**二、实现AOP功能**  
-
+最简单的做法是通过beanHelp类获取所有Controller或Service注解的类，然后遍历获取这些类的成员变量，看是否是AutoWired注解的类，如果是通过ReflectionUtil类的setFiled方法来实现DI注入
 
 
 ##**Dispactherservlet是核心类,框架主要的原理如下：**  
