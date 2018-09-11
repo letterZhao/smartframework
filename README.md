@@ -19,5 +19,5 @@ Handler类: 封装Controller和Method
 ControllerHelper类: 根据ClassHepler类获取所有Controller注解的方法，通过反射获取所有带Action注解的方法，并获取请求路径和请求方法，将Request和Controller关系映射到一个Map中,根据Request可以随时获取Map中的Value;    
 #**四、初始化框架**  
 HelpLoader类 初始化ClassHelper、BeanHelper、IOCHelper、ControllerHelper    
-##**五、请求转发器Dispactherservlet** 
-
+##**五、请求转发器DispatcherServlet**   
+首先从request中获取请求方法和请求路径，封装成一个request对象，通过ControllerHelper.getHandler(requestMethod,requestPath);方法获取Handler类，然后通过BeanHelp.getBean()方法获取实例对象，随后通过HttpRequest获取请求参数封装为Param类，通过ReflectionUtil.invokeMethod(controllerBean,actionMethod);方法返回结果，然后判断返回结果的类型，返回视图或者数据
