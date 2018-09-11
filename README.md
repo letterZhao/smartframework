@@ -1,3 +1,4 @@
+
 #smartframework
 黄勇<<架构探险:从零开始写JavaWeb框架>>,轻量级javaweb框架smartframework源码,持续更新中....  
 
@@ -11,9 +12,12 @@ ClassHelper类 封装了ClassUtil类，提供各种获取Class的方法
 ReflectionUtil类 提供实例化Class的方法  
 BeanHelper类 IOC容器，提供获取实例方法    
 #**二、实现AOP功能**  
-最简单的做法是通过beanHelp类获取所有Controller或Service注解的类，然后遍历获取这些类的成员变量，看是否是AutoWired注解的类，如果是通过ReflectionUtil类的setFiled方法来实现DI注入
+最简单的做法是通过beanHelp类获取所有Controller或Service注解的类，然后遍历获取这些类的成员变量，看是否是AutoWired注解的类，如果是通过ReflectionUtil类的setFiled方法来实现DI注入  
+#**三、实现请求和Controller层的映射关系**  
+Request类: 封装请求路径和请求方法  
+Handler类: 封装Controller和Method  
+ControllerHelper类: 根据ClassHepler类获取所有Controller注解的方法，通过反射获取所有带Action注解的方法，并获取请求路径和请求方法，将Request和Controller关系映射到一个Map中,根据Request可以随时获取Map中的Value;    
+#**四、初始化框架**  
+HelpLoader类 初始化ClassHelper、BeanHelper、IOCHelper、ControllerHelper    
+##**五、请求转发器Dispactherservlet** 
 
-
-##**Dispactherservlet是核心类,框架主要的原理如下：**  
-1、提供handler类和request类，一个request对应一个handler类,在框架初始化时完成注册，用户发出请求时框架可以根据请求方法和请求路径得到request进而得到handler。handler中包含被请求的controller以及method，从而进行定位，最后通过反射动态执行代码得到结果result。
-2、框架包括两种数据结构view和data,view返回jsp页面或者数据渲染过的jsp页面，data返回json数据,根据得到的result类型判断返回哪种类型的数据结构。
